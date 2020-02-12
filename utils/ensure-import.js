@@ -30,4 +30,4 @@ module.exports = function ensureImport(ast, j, importNames = [], module) {
       }
     });
   }
-}
+};

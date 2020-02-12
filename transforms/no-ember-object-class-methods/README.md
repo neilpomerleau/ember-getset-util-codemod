@@ -4,12 +4,12 @@
 ## Usage
 
 ```
-npx ember-getset-util-codemod no-ember-object-class-methods path/of/files/ or/some**/*glob.js
+npx ember-no-ember-object-class-methods-codemod no-ember-object-class-methods path/of/files/ or/some**/*glob.js
 
 # or
 
-yarn global add ember-getset-util-codemod
-ember-getset-util-codemod no-ember-object-class-methods path/of/files/ or/some**/*glob.js
+yarn global add ember-no-ember-object-class-methods-codemod
+ember-no-ember-object-class-methods-codemod no-ember-object-class-methods path/of/files/ or/some**/*glob.js
 ```
 
 ## Input / Output
