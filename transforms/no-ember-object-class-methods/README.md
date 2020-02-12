@@ -1,15 +1,18 @@
 # no-ember-object-class-methods
 
+This codemod transforms usages of the following EmberObject class methods on `this` to use the functional equivalents:
+
+* incrementProperty
+* decrementProperty
+* toggleProperty
+* addObserver
+* removeObserver
+* notifyPropertyChange
 
 ## Usage
 
 ```
-npx ember-no-ember-object-class-methods-codemod no-ember-object-class-methods path/of/files/ or/some**/*glob.js
-
-# or
-
-yarn global add ember-no-ember-object-class-methods-codemod
-ember-no-ember-object-class-methods-codemod no-ember-object-class-methods path/of/files/ or/some**/*glob.js
+npx neilpomerleau/ember-no-ember-object-class-methods-codemod no-ember-object-class-methods path/of/files/ or/some**/*glob.js
 ```
 
 ## Input / Output
