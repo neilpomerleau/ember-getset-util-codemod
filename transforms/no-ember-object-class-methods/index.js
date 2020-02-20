@@ -34,6 +34,11 @@ module.exports = function transformer(file, api) {
         switch (callee.property.name) {
           case 'incrementProperty':
           case 'decrementProperty':
+            node.comments = node.comments || [];
+            node.comments.push(
+              j.commentLine(' TODO: remove `parseFloat` if this value is an integer'),
+              j.commentLine(' TODO: remove `|| 0` if this value is initialized and never undefined')
+            );
             if (!utilMethodsUsed.includes('get')) {
               utilMethodsUsed.push('get');
             }
