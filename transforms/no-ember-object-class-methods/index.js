@@ -12,8 +12,9 @@ const objectMethods = [
 module.exports = function transformer(file, api) {
   const j = getParser(api);
 
-  // During replacement, we populate this array with any util methods we use from `objectMethods`
-  const utilMethodsUsed = [];
+  // During replacement, we populate these arrays with any util methods we use from `objectMethods`
+  const objectMethodsUsed = [];
+  const observerMethodsUsed = [];
 
   const ast = j(file.source);
 
@@ -39,11 +40,11 @@ module.exports = function transformer(file, api) {
               j.commentLine(' TODO: remove `parseFloat` if this value is an integer'),
               j.commentLine(' TODO: remove `|| 0` if this value is initialized and never undefined')
             );
-            if (!utilMethodsUsed.includes('get')) {
-              utilMethodsUsed.push('get');
+            if (!objectMethodsUsed.includes('get')) {
+              objectMethodsUsed.push('get');
             }
-            if (!utilMethodsUsed.includes('set')) {
-              utilMethodsUsed.push('set');
+            if (!objectMethodsUsed.includes('set')) {
+              objectMethodsUsed.push('set');
             }
             key = node.arguments[0];
             value = node.arguments[1] ? node.arguments.pop() : j.identifier('1');
@@ -64,11 +65,11 @@ module.exports = function transformer(file, api) {
             );
             break;
           case 'toggleProperty':
-            if (!utilMethodsUsed.includes('get')) {
-              utilMethodsUsed.push('get');
+            if (!objectMethodsUsed.includes('get')) {
+              objectMethodsUsed.push('get');
             }
-            if (!utilMethodsUsed.includes('set')) {
-              utilMethodsUsed.push('set');
+            if (!objectMethodsUsed.includes('set')) {
+              objectMethodsUsed.push('set');
             }
             key = node.arguments[0];
             node.callee = j.identifier('set');
@@ -80,9 +81,17 @@ module.exports = function transformer(file, api) {
               )
             );
             break;
+          case 'addObserver':
+          case 'removeObserver':
+            if (!observerMethodsUsed.includes(callee.property.name)) {
+              observerMethodsUsed.push(callee.property.name);
+            }
+            node.callee = j.identifier(callee.property.name);
+            node.arguments.unshift(j.thisExpression());
+            break;
           default:
-            if (!utilMethodsUsed.includes(callee.property.name)) {
-              utilMethodsUsed.push(callee.property.name);
+            if (!objectMethodsUsed.includes(callee.property.name)) {
+              objectMethodsUsed.push(callee.property.name);
             }
             node.callee = j.identifier(callee.property.name);
             node.arguments.unshift(j.thisExpression());
@@ -92,10 +101,13 @@ module.exports = function transformer(file, api) {
     });
 
   // Update imports if necessary
-  if (utilMethodsUsed.length) {
-    utilMethodsUsed.sort();
-
-    ensureImport(ast, j, utilMethodsUsed, '@ember/object');
+  if (objectMethodsUsed.length) {
+    objectMethodsUsed.sort();
+    ensureImport(ast, j, objectMethodsUsed, '@ember/object');
+  }
+  if (observerMethodsUsed.length) {
+    observerMethodsUsed.sort();
+    ensureImport(ast, j, observerMethodsUsed, '@ember/object/observers');
   }
 
   return ast.toSource();

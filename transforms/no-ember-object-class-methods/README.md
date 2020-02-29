@@ -50,7 +50,8 @@ export default Service.extend({
 
 **Output** (<small>[basic.output.js](transforms/no-ember-object-class-methods/__testfixtures__/basic.output.js)</small>):
 ```js
-import { addObserver, get, notifyPropertyChange, removeObserver, set } from "@ember/object";
+import { addObserver, removeObserver } from "@ember/object/observers";
+import { get, notifyPropertyChange, set } from "@ember/object";
 import Service from '@ember/service';
 
 export default Service.extend({
@@ -83,7 +84,8 @@ export default Service.extend({
 
 **Input** (<small>[existing-imports.input.js](transforms/no-ember-object-class-methods/__testfixtures__/existing-imports.input.js)</small>):
 ```js
-import { addObserver, removeObserver } from '@ember/object';
+import { notifyPropertyChange } from '@ember/object';
+import { addObserver } from '@ember/object/observers';
 import Service from '@ember/service';
 
 export default Service.extend({
@@ -98,15 +100,16 @@ export default Service.extend({
 
   doStuff() {
     addObserver(this, 'bar', observer);
-    removeObserver(this, 'baz', observer);
-    this.notifyPropertyChange('biz');
+    this.removeObserver('baz', observer);
+    notifyPropertyChange(this, 'biz');
   },
 });
 ```
 
 **Output** (<small>[existing-imports.output.js](transforms/no-ember-object-class-methods/__testfixtures__/existing-imports.output.js)</small>):
 ```js
-import { addObserver, removeObserver, get, notifyPropertyChange, set } from '@ember/object';
+import { notifyPropertyChange, get, set } from '@ember/object';
+import { addObserver, removeObserver } from '@ember/object/observers';
 import Service from '@ember/service';
 
 export default Service.extend({

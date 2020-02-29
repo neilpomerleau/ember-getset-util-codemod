@@ -1,4 +1,5 @@
-import { addObserver, removeObserver } from '@ember/object';
+import { notifyPropertyChange } from '@ember/object';
+import { addObserver } from '@ember/object/observers';
 import Service from '@ember/service';
 
 export default Service.extend({
@@ -13,7 +14,7 @@ export default Service.extend({
 
   doStuff() {
     addObserver(this, 'bar', observer);
-    removeObserver(this, 'baz', observer);
-    this.notifyPropertyChange('biz');
+    this.removeObserver('baz', observer);
+    notifyPropertyChange(this, 'biz');
   },
 });
